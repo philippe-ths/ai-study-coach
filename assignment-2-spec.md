@@ -4,7 +4,7 @@ Version: 2.1.0
 
 Audience: course assessors and AI coding agents working on the project.
 
-Brief: [assignment-2-brief-1.0.0.md](assignment-2-brief-1.0.0.md)
+Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Project spec: [project-spec.md](project-spec.md)
 
 ---
