@@ -1,7 +1,7 @@
 # Project Spec: AI Study Coach
 
-Version: 0.2.0
-Brief: [assignment-2-brief-1.0.0.md](assignment-2-brief-1.0.0.md)
+Version: 0.3.0
+Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Spec: [assignment-2-spec.md](assignment-2-spec.md)
 
 This file documents the current implementation truth for the AI Study Coach project.
@@ -56,7 +56,7 @@ It is a first draft based on the brief and spec; it will be updated as code land
 ## Project Structure
 - `capstone.py`: Single Python file containing all five sections and the top-level docstring. (Not yet created.)
 - SVM training CSV: Synthetic labelled dataset read by the SVM section. (Not yet created; filename to be decided.)
-- `assignment-2-brief-1.0.0.md`: Course-supplied brief describing the assignment goal.
+- `assignment-2-brief.md`: Living brief describing the assignment goal.
 - `assignment-2-spec.md`: Living detailed spec covering outcomes, scope, constraints, architecture, milestones, and acceptance criteria.
 - `project-spec-template.md`: Template this spec was derived from (kept local, not part of the submission).
 - `.ai-policy/`, `.agents/`, `.claude/`, `.codex/`, `.gemini/`, `.githooks/`, `.github/`, `ai-workflow.md`, `CLAUDE.md`: AI workflow scaffolding, kept local and excluded from the submission zip.
@@ -68,11 +68,11 @@ It is a first draft based on the brief and spec; it will be updated as code land
 
 ## Versioning
 - `project-spec.md` is the living "latest" document and is the only file CLAUDE.md imports.
-- Living documents (`project-spec.md`, `assignment-2-spec.md`) use unversioned filenames.
+- Living documents (`project-spec.md`, `assignment-2-spec.md`, `assignment-2-brief.md`) use unversioned filenames.
 - The current version is recorded in the `Version: X.Y.Z` header at the top of each living document.
 - When releasing a new minor or major version, create a Git tag on the merge commit using the format `<doc-slug>/X.Y.Z` (e.g. `spec/2.1.0`, `project-spec/0.2.0`).
 - Git history and tags are the canonical record of past versions; do not create physical snapshot files for living docs.
-- Versioned filenames (e.g. `assignment-2-brief-1.0.0.md`) are reserved for frozen documents that will not be updated.
+- Versioned filenames may still be used for frozen documents that will not be updated.
 - Historical versions are viewed via `git show <tag>:<path>` or GitHub's browse-at-tag UI; link to historical content with tag-pinned URLs rather than inline filenames.
 - Use semantic-ish versioning: patch for wording, minor for added/removed sections or scope changes, major for breaking direction changes.
 

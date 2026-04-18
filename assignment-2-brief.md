@@ -1,5 +1,7 @@
 # Assignment 2 Brief: AI Study Coach
 
+Version: 1.0.0
+
 ## What is this
 
 A course assignment for the Oxford AI Engineering programme.
@@ -37,4 +39,4 @@ The zip file is submitted on time. The script runs without errors. Every section
 - Submission: `PM_python_coding.zip`
 - One attempt only
 - Full requirements: `Python_Assignment.pdf` (Use Case 3)
-- Spec: `assignment-2-spec-[version].md`
+- Spec: `assignment-2-spec.md`
