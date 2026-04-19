@@ -1,6 +1,6 @@
 # Assignment 2 Spec: AI Study Coach
 
-Version: 2.2.0
+Version: 2.3.0
 
 Audience: course assessors and AI coding agents working on the project.
 
@@ -244,3 +244,5 @@ Optional sections may be added where useful, for example:
 | Git-tag-based versioning for living docs, unversioned filenames | Git history and tags already provide version tracking. Physical snapshot files are redundant and risk drift. Added in v2.1.0. |
 | M2 chart pair: bar (total study minutes by topic) + line (study minutes per session over time) | Two tutorial-familiar chart types that satisfy AC3 while answering distinct questions: aggregation across a categorical dimension, and a trend across time. Added in v2.2.0. |
 | Local pytest scaffold under `tests/` with pinned dev deps in `requirements-dev.txt`, excluded from the submission zip | Gives the agent a repeatable validation signal during development without expanding the submission surface beyond what the brief requires. Added in v2.2.0. |
+| M3 SVM training CSV: `study_risk.csv` with columns `total_hours, avg_quiz_score, avg_difficulty, session_count, label` (labels `"at risk"` / `"on track"`) | Feature columns map 1:1 to quantities derivable from the student's collected data, so the runtime feature vector can be fed to the model without transformation. Filename kept short and label-descriptive. Added in v2.3.0. |
+| M3 insufficient-data policy: if the current student has no quiz scores or no study sessions, still train and print accuracy + classification report, but print "not enough data to predict" instead of a per-student prediction | Keeps AC4's training-side evidence visible to the assessor even when the student skipped optional inputs, while being honest about the prediction's unreliability. Added in v2.3.0. |
