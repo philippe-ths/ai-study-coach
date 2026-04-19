@@ -5,7 +5,7 @@ Run:
 
 The script runs sequentially through five sections:
     1. Input collection         (implemented)
-    2. Data summary and charts  (M2, not yet implemented)
+    2. Data summary and charts  (implemented)
     3. SVM risk prediction      (M3, not yet implemented)
     4. Coach Chat (LangChain)   (M4, not yet implemented)
     5. Docstring and packaging  (M5)
@@ -21,6 +21,9 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 from datetime import date
+
+import matplotlib.pyplot as plt
+import pandas as pd
 
 
 # ---------------------------------------------------------------------------
@@ -226,9 +229,99 @@ def print_summary(student: Student) -> None:
 # ---------------------------------------------------------------------------
 
 
+@dataclass
+class StudyMetrics:
+    total_hours: float
+    average_duration_minutes: float
+    average_quiz_score: float | None
+
+
+def sessions_dataframe(student: Student) -> pd.DataFrame:
+    columns = ["date", "duration_minutes", "topic", "difficulty"]
+    if not student.study_sessions:
+        return pd.DataFrame({c: pd.Series(dtype=t) for c, t in zip(
+            columns, ["datetime64[ns]", "int64", "object", "int64"]
+        )})
+    return pd.DataFrame(
+        [
+            {
+                "date": pd.Timestamp(s.date),
+                "duration_minutes": s.duration_minutes,
+                "topic": s.topic,
+                "difficulty": s.difficulty,
+            }
+            for s in student.study_sessions
+        ],
+        columns=columns,
+    )
+
+
+def compute_metrics(student: Student, df: pd.DataFrame) -> StudyMetrics:
+    if df.empty:
+        total_hours = 0.0
+        avg_duration = 0.0
+    else:
+        total_hours = float(df["duration_minutes"].sum()) / 60.0
+        avg_duration = float(df["duration_minutes"].mean())
+    scores = student.quiz_scores
+    avg_quiz = float(sum(scores) / len(scores)) if scores else None
+    return StudyMetrics(
+        total_hours=total_hours,
+        average_duration_minutes=avg_duration,
+        average_quiz_score=avg_quiz,
+    )
+
+
+def bar_chart_minutes_by_topic(df: pd.DataFrame):
+    totals = df.groupby("topic")["duration_minutes"].sum().sort_values(ascending=False)
+    fig, ax = plt.subplots()
+    ax.bar(totals.index.tolist(), totals.values)
+    ax.set_title("Total study minutes by topic")
+    ax.set_xlabel("Topic")
+    ax.set_ylabel("Minutes")
+    fig.autofmt_xdate()
+    fig.tight_layout()
+    return fig, ax
+
+
+def line_chart_minutes_over_time(df: pd.DataFrame):
+    ordered = df.sort_values("date")
+    fig, ax = plt.subplots()
+    ax.plot(ordered["date"], ordered["duration_minutes"], marker="o")
+    ax.set_title("Study minutes per session over time")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Minutes")
+    fig.autofmt_xdate()
+    fig.tight_layout()
+    return fig, ax
+
+
 def run_data_and_charts(student: Student) -> None:
-    # M2: Pandas DataFrame, summary metrics, Matplotlib charts.
-    pass
+    print()
+    print("=" * 60)
+    print("Data and charts")
+    print("=" * 60)
+
+    df = sessions_dataframe(student)
+    if df.empty:
+        print("No study sessions captured - skipping data and charts.")
+        return
+
+    print("Study sessions (DataFrame):")
+    print(df.to_string(index=False))
+
+    metrics = compute_metrics(student, df)
+    print()
+    print(f"Total study time:        {metrics.total_hours:.2f} hours")
+    print(f"Average session length:  {metrics.average_duration_minutes:.1f} minutes")
+    if metrics.average_quiz_score is None:
+        print("Average quiz score:      none captured")
+    else:
+        print(f"Average quiz score:      {metrics.average_quiz_score:.1f}")
+
+    bar_chart_minutes_by_topic(df)
+    line_chart_minutes_over_time(df)
+    plt.show()
 
 
 def run_svm_prediction(student: Student) -> None:
