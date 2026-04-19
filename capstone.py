@@ -6,7 +6,7 @@ Run:
 The script runs sequentially through five sections:
     1. Input collection         (implemented)
     2. Data summary and charts  (implemented)
-    3. SVM risk prediction      (M3, not yet implemented)
+    3. SVM risk prediction      (implemented)
     4. Coach Chat (LangChain)   (M4, not yet implemented)
     5. Docstring and packaging  (M5)
 
@@ -21,9 +21,23 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 from datetime import date
+from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+
+SVM_CSV_PATH = Path(__file__).resolve().parent / "study_risk.csv"
+SVM_FEATURE_COLUMNS = [
+    "total_hours",
+    "avg_quiz_score",
+    "avg_difficulty",
+    "session_count",
+]
+SVM_LABEL_COLUMN = "label"
 
 
 # ---------------------------------------------------------------------------
@@ -324,9 +338,73 @@ def run_data_and_charts(student: Student) -> None:
     plt.show()
 
 
+# ---------------------------------------------------------------------------
+# Section 3: SVM risk prediction
+# ---------------------------------------------------------------------------
+
+
+def load_training_data(csv_path: Path) -> tuple[pd.DataFrame, pd.Series]:
+    df = pd.read_csv(csv_path)
+    X = df[SVM_FEATURE_COLUMNS]
+    y = df[SVM_LABEL_COLUMN]
+    return X, y
+
+
+def student_feature_vector(student: Student) -> np.ndarray | None:
+    sessions = student.study_sessions
+    scores = student.quiz_scores
+    if not sessions or not scores:
+        return None
+    total_hours = sum(s.duration_minutes for s in sessions) / 60.0
+    avg_quiz = sum(scores) / len(scores)
+    avg_difficulty = sum(s.difficulty for s in sessions) / len(sessions)
+    session_count = len(sessions)
+    return np.array(
+        [[total_hours, avg_quiz, avg_difficulty, session_count]],
+        dtype=float,
+    )
+
+
+def train_svm(
+    X: pd.DataFrame, y: pd.Series
+) -> tuple[SVC, float, str]:
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    model = SVC(kernel="rbf", C=1.0, gamma="scale", random_state=42)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    accuracy = float(accuracy_score(y_test, y_pred))
+    report = classification_report(y_test, y_pred, zero_division=0)
+    return model, accuracy, report
+
+
 def run_svm_prediction(student: Student) -> None:
-    # M3: Train SVC on CSV, print accuracy + classification report, predict.
-    pass
+    print()
+    print("=" * 60)
+    print("SVM risk prediction")
+    print("=" * 60)
+
+    X, y = load_training_data(SVM_CSV_PATH)
+    print(f"Loaded {len(X)} training rows from {SVM_CSV_PATH.name}")
+
+    model, accuracy, report = train_svm(X, y)
+    print(f"Test accuracy: {accuracy:.2%}")
+    print()
+    print("Classification report:")
+    print(report)
+
+    vector = student_feature_vector(student)
+    if vector is None:
+        print(
+            "Not enough data to predict for this student "
+            "(need at least one study session and one quiz score)."
+        )
+        return
+
+    features_df = pd.DataFrame(vector, columns=SVM_FEATURE_COLUMNS)
+    prediction = model.predict(features_df)[0]
+    print(f"Prediction for {student.name}: {prediction}")
 
 
 def run_coach_chat(student: Student) -> None:
