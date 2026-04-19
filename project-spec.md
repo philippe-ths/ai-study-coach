@@ -1,6 +1,6 @@
 # Project Spec: AI Study Coach
 
-Version: 0.3.0
+Version: 0.3.1
 Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Spec: [assignment-2-spec.md](assignment-2-spec.md)
 
@@ -13,8 +13,9 @@ It is a first draft based on the brief and spec; it will be updated as code land
 - The core flow is a sequential terminal session that collects student data, summarises it with charts, predicts risk with an SVM classifier, and answers study questions via a LangChain Coach Chat.
 
 ## Domain Concepts
-- A `Student` holds a name, course, goals, quiz scores, and a collection of study sessions.
-- A `StudySession` is a single study event with a date, duration, topic, and difficulty rating.
+- A `Person` base class holds name and course; `Student` inherits from it, satisfying the OOP inheritance requirement.
+- A `Student` holds a name, course, goals, quiz scores, and a collection of study sessions. Quiz scores are encapsulated as a private list with a read-only property and a validating mutator.
+- A `StudySession` is a single study event with a date, duration (minutes), topic, and a numeric difficulty rating (1-5).
 - The SVM training dataset is a separate CSV of synthetic records labelled "at risk" or "on track".
 - The RAG knowledge base is a list of 8+ short text chunks hardcoded in the script.
 - A `Student` owns many `StudySession` records; the student's aggregated metrics become the feature vector fed into the SVM for a single prediction.
@@ -54,7 +55,7 @@ It is a first draft based on the brief and spec; it will be updated as code land
 - openai: LLM provider used via LangChain for chat and RAG answers.
 
 ## Project Structure
-- `capstone.py`: Single Python file containing all five sections and the top-level docstring. (Not yet created.)
+- `capstone.py`: Single Python file containing all five sections and the top-level docstring. (Input-collection section and `Person` / `Student` / `StudySession` domain model implemented; sections 2-5 are placeholder stubs.)
 - SVM training CSV: Synthetic labelled dataset read by the SVM section. (Not yet created; filename to be decided.)
 - `assignment-2-brief.md`: Living brief describing the assignment goal.
 - `assignment-2-spec.md`: Living detailed spec covering outcomes, scope, constraints, architecture, milestones, and acceptance criteria.
