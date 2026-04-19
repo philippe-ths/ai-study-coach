@@ -1,11 +1,19 @@
 # Assignment 2 Spec: AI Study Coach
 
-Version: 2.1.0
+Version: 2.2.0
 
 Audience: course assessors and AI coding agents working on the project.
 
 Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Project spec: [project-spec.md](project-spec.md)
+
+---
+
+## Purpose
+
+This document is the reproduce-from-this-alone source of truth for the AI Study Coach.
+A reader with this file, the brief, and the fixed tech stack should be able to reconstruct the project's deliverable shape — outcomes, scope, constraints, architecture, acceptance criteria, milestones, and prior decisions — without reading any other project file.
+Any scope change, decision, or deliverable-affecting choice made during implementation must be reflected here before the corresponding pull request is merged.
 
 ---
 
@@ -26,7 +34,7 @@ A student can:
 - Terminal-based input collection with validation
 - Object-oriented domain model for students and study sessions
 - Pandas-based data tracking with computed summary metrics
-- Matplotlib visualisations (at least 2 distinct chart types)
+- Matplotlib visualisations: a bar chart of total study minutes by topic and a line chart of study minutes per session over time (two distinct chart types)
 - SVM classification trained on a small CSV dataset
 - LangChain conversational chain with memory
 - LangChain RAG using FAISS over a local knowledge base of 8+ text chunks
@@ -39,7 +47,7 @@ A student can:
 - User authentication
 - Multi-user support
 - Deployment or hosting
-- Unit tests (not required by brief, though useful)
+- Unit tests as part of the submission (a local pytest scaffold exists under `tests/` for development convenience but is excluded from the submission zip)
 - OAuth or third-party API integrations beyond OpenAI
 - Real student data (all training data is synthetic)
 
@@ -67,6 +75,7 @@ A student can:
 - Single Python file: `capstone.py`
 - One supporting data file: CSV for the SVM training data
 - Zipped as: `PM_python_coding.zip`
+- Excluded from the zip: `tests/`, `.venv/`, `requirements-dev.txt`, and any other local development scaffolding (AI workflow files, living docs, editor configs).
 - One submission attempt, no resubmission.
 - Deadline: 25 April 2026.
 
@@ -213,7 +222,7 @@ Optional sections may be added where useful, for example:
 - **Context:** Final milestone. All earlier sections must be working end-to-end before packaging. One submission attempt means this must be correct first time.
 - **Scope:**
   - In: top-of-file docstring (what the script does, how to run it, how to set the API key), end-to-end run confirmation, zip named `PM_python_coding.zip` containing `capstone.py` and the training CSV.
-  - Out: README file, separate setup script, `requirements.txt` (not required by the brief).
+  - Out: README file, separate setup script, `requirements.txt` (not required by the brief); local development scaffolding — `tests/`, `.venv/`, `requirements-dev.txt`, AI workflow files, and living docs — must not be included in the submission zip.
 - **Success criteria:** AC8 (docstring) and AC9 (zip naming and contents) are satisfied.
 - **Constraints:** §3 applies; no milestone-specific additions.
 - **Open questions:** None identified.
@@ -233,3 +242,5 @@ Optional sections may be added where useful, for example:
 | Named architecture patterns (Batch Sequential / Pipeline at architecture level; Transaction Script at code-structure level) | Gives readers a handle they can look up; makes the intent explicit rather than implied by description alone. Added in v2.1.0. |
 | Milestone convention (Intent / Context / Scope / Success / Constraints / Open questions) | Aligns with current spec-driven development practice (GitHub Spec Kit, Addy Osmani, Augment Code, Fowler). Keeps implementation detail out of milestones. Added in v2.1.0. |
 | Git-tag-based versioning for living docs, unversioned filenames | Git history and tags already provide version tracking. Physical snapshot files are redundant and risk drift. Added in v2.1.0. |
+| M2 chart pair: bar (total study minutes by topic) + line (study minutes per session over time) | Two tutorial-familiar chart types that satisfy AC3 while answering distinct questions: aggregation across a categorical dimension, and a trend across time. Added in v2.2.0. |
+| Local pytest scaffold under `tests/` with pinned dev deps in `requirements-dev.txt`, excluded from the submission zip | Gives the agent a repeatable validation signal during development without expanding the submission surface beyond what the brief requires. Added in v2.2.0. |
