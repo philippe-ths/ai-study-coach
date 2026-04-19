@@ -1,6 +1,6 @@
 # Assignment 2 Spec: AI Study Coach
 
-Version: 2.3.0
+Version: 2.4.0
 
 Audience: course assessors and AI coding agents working on the project.
 
@@ -246,3 +246,8 @@ Optional sections may be added where useful, for example:
 | Local pytest scaffold under `tests/` with pinned dev deps in `requirements-dev.txt`, excluded from the submission zip | Gives the agent a repeatable validation signal during development without expanding the submission surface beyond what the brief requires. Added in v2.2.0. |
 | M3 SVM training CSV: `study_risk.csv` with columns `total_hours, avg_quiz_score, avg_difficulty, session_count, label` (labels `"at risk"` / `"on track"`) | Feature columns map 1:1 to quantities derivable from the student's collected data, so the runtime feature vector can be fed to the model without transformation. Filename kept short and label-descriptive. Added in v2.3.0. |
 | M3 insufficient-data policy: if the current student has no quiz scores or no study sessions, still train and print accuracy + classification report, but print "not enough data to predict" instead of a per-student prediction | Keeps AC4's training-side evidence visible to the assessor even when the student skipped optional inputs, while being honest about the prediction's unreliability. Added in v2.3.0. |
+| M4 LangChain stack: `ConversationBufferMemory` + `ConversationChain` for AC5, `FAISS.from_texts` + `RetrievalQA.from_chain_type` for AC6, `ChatOpenAI(model="gpt-4o-mini")` + `OpenAIEmbeddings()` as the LLM / embedding providers | Matches the course `langchain/` tutorial patterns and satisfies AC5's requirement to print `memory.buffer`. `gpt-4o-mini` keeps per-run cost negligible while producing coherent short-form answers. Added in v2.4.0. |
+| M4 cross-version import fallback: each LangChain import is wrapped in a try/except that also tries the `langchain_classic` / `langchain_community` / `langchain_openai` paths | LangChain v1 relocated `ConversationBufferMemory`, `ConversationChain`, and `RetrievalQA` into `langchain-classic`, and split out `langchain-community` / `langchain-openai` earlier. The try/except lets a single submitted `capstone.py` run on either the older layout the course tutorial used or a current fresh install. Added in v2.4.0. |
+| M4 knowledge base: 10 hardcoded in-code chunks covering active recall, spaced repetition, Pomodoro, sleep, Feynman, interleaving, environment, exam technique, exercise, and goal-setting | Exceeds AC6's 8-chunk minimum with a small buffer and spans topical areas the brief calls out (study techniques, course logistics, exam rules). Keeps the knowledge base visible inside the script rather than in a separate file. Added in v2.4.0. |
+| M4 memory-chain exchange: two predictions per run (an opening tip request referencing the student's name and course, then "What was my name?") | A single exchange satisfies AC5's literal requirement, but the follow-up question gives the assessor a visible signal that `memory.buffer` actually carries prior turns. Added in v2.4.0. |
+| M4 graceful-degradation message: "OPENAI_API_KEY not set; skipping Coach Chat." followed by a hint to rerun with the variable set | AC7 requires a clear message; surfacing the rerun hint makes the skip feel like a controlled branch rather than an error, and keeps the assessor's exit-code-0 expectation intact. Added in v2.4.0. |
