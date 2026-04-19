@@ -1,6 +1,6 @@
 # Project Spec: AI Study Coach
 
-Version: 0.6.0
+Version: 0.7.0
 Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Spec: [assignment-2-spec.md](assignment-2-spec.md)
 
@@ -60,7 +60,7 @@ It is a first draft based on the brief and spec; it will be updated as code land
 - openai: LLM provider used via LangChain for chat and RAG answers.
 
 ## Project Structure
-- `capstone.py`: Single Python file containing all five sections and the top-level docstring. (Sections 1-3 implemented: input collection, `Person` / `Student` / `StudySession` domain model, Pandas DataFrame, summary metrics, two Matplotlib chart types, and SVC risk prediction with train/test split, accuracy, classification report, and a per-student prediction. Sections 4-5 are placeholder stubs.)
+- `capstone.py`: Single Python file containing all five sections and the top-level docstring. (Sections 1-4 implemented: input collection, `Person` / `Student` / `StudySession` domain model, Pandas DataFrame, summary metrics, two Matplotlib chart types, SVC risk prediction with train/test split, accuracy, classification report, per-student prediction, and a LangChain Coach Chat with `ConversationBufferMemory` + `ConversationChain` and a FAISS-backed `RetrievalQA` over a 10-chunk in-code knowledge base. Section 5 is a placeholder stub.)
 - `study_risk.csv`: Synthetic labelled dataset read by the SVM section. Columns: `total_hours, avg_quiz_score, avg_difficulty, session_count, label`. Labels are `"at risk"` or `"on track"`. Ships inside the submission zip alongside `capstone.py`.
 - `tests/`: Pytest suite covering the implemented sections (local dev only, excluded from the submission zip).
 - `requirements-dev.txt`: Pinned local dev dependencies used by the virtualenv (local dev only, excluded from the submission zip).
@@ -68,12 +68,13 @@ It is a first draft based on the brief and spec; it will be updated as code land
 - `assignment-2-spec.md`: Living detailed spec covering outcomes, scope, constraints, architecture, milestones, and acceptance criteria.
 - `project-spec-template.md`: Template this spec was derived from (kept local, not part of the submission).
 - `.ai-policy/`, `.agents/`, `.claude/`, `.codex/`, `.gemini/`, `.githooks/`, `.github/`, `ai-workflow.md`, `CLAUDE.md`: AI workflow scaffolding, kept local and excluded from the submission zip.
+- `.env.example`: Template for local-dev environment variables (notably `OPENAI_API_KEY`). Tracked in git; real `.env` files are gitignored. Excluded from the submission zip.
 
 ## Testing Overview
-- Pytest suite under `tests/` covers the implemented sections. M2 is covered: DataFrame shape and columns, summary metric values, bar and line chart construction, smoke and empty-data paths for `run_data_and_charts`. M3 is covered: CSV load shape, student feature-vector values and insufficient-data cases, SVC training returns a fitted model with in-range accuracy, and happy-path plus insufficient-data runs of `run_svm_prediction`.
+- Pytest suite under `tests/` covers the implemented sections. M2 is covered: DataFrame shape and columns, summary metric values, bar and line chart construction, smoke and empty-data paths for `run_data_and_charts`. M3 is covered: CSV load shape, student feature-vector values and insufficient-data cases, SVC training returns a fitted model with in-range accuracy, and happy-path plus insufficient-data runs of `run_svm_prediction`. M4 is covered offline: knowledge-base size (≥8) and shape, and the graceful-degradation path of `run_coach_chat` when `OPENAI_API_KEY` is unset. The with-key path is validated by a manual end-to-end run (deliberately not in the automated suite to avoid API calls).
 - Tests run via `.venv/bin/pytest tests/`. `tests/conftest.py` forces the matplotlib `Agg` backend so suite runs are non-interactive.
-- Remaining manual validation: end-to-end run of `python capstone.py` to confirm each acceptance criterion (AC1-AC9) is visibly satisfied.
-- Coverage gaps: M1 input collection has no automated tests; M4-M5 sections have no coverage yet (stubs).
+- Remaining manual validation: end-to-end run of `python capstone.py` (with `OPENAI_API_KEY` set) to confirm each acceptance criterion (AC1-AC9) is visibly satisfied, including the Coach Chat memory/RAG output.
+- Coverage gaps: M1 input collection has no automated tests; M4 LLM-calling path is intentionally manual-only; M5 is a stub.
 
 ## Versioning
 - `project-spec.md` is the living "latest" document and is the only file CLAUDE.md imports.

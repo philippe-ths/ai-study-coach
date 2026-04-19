@@ -7,17 +7,18 @@ The script runs sequentially through five sections:
     1. Input collection         (implemented)
     2. Data summary and charts  (implemented)
     3. SVM risk prediction      (implemented)
-    4. Coach Chat (LangChain)   (M4, not yet implemented)
+    4. Coach Chat (LangChain)   (implemented)
     5. Docstring and packaging  (M5)
 
 API key:
-    The LangChain sections (M4) will use the OPENAI_API_KEY environment
-    variable. If it is not set, those sections will print a message and
-    the script will still complete.
+    Section 4 uses the OPENAI_API_KEY environment variable. If it is not
+    set, section 4 prints a clear message and the script still completes
+    all other sections without error.
 """
 
 from __future__ import annotations
 
+import os
 import sys
 from dataclasses import dataclass
 from datetime import date
@@ -38,6 +39,21 @@ SVM_FEATURE_COLUMNS = [
     "session_count",
 ]
 SVM_LABEL_COLUMN = "label"
+
+LLM_MODEL = "gpt-4o-mini"
+
+KNOWLEDGE_BASE: list[str] = [
+    "Active recall beats passive re-reading. Close the book, write what you remember, then check what you missed.",
+    "Spaced repetition reviews material at expanding intervals (1 day, 3 days, 7 days, 14 days). Anki and similar flashcard tools automate this.",
+    "The Pomodoro technique uses 25 minutes of focused study followed by a 5-minute break. After four rounds, take a 15 to 30 minute break.",
+    "Sleep consolidates learning. Aim for 7 to 9 hours; pulling an all-nighter before an exam reduces recall the next day.",
+    "The Feynman technique: explain a concept in plain language as if to a twelve-year-old. The gaps in your explanation reveal what you do not yet understand.",
+    "Interleaving mixes topics within a single session rather than blocking one topic for hours. It improves long-term retention even though it feels harder in the moment.",
+    "A consistent, distraction-free study environment cues focus. Phones in another room outperform phones placed face-down on the desk.",
+    "Exam technique: read every question before answering, allocate time by marks available, and tackle the questions you know first.",
+    "Exercise boosts cognition. Even a 20-minute walk before a study session improves focus for roughly two hours afterward.",
+    "Goals should be specific and time-boxed. 'Study more' fails; 'Finish chapter 4 exercises by Friday' succeeds.",
+]
 
 
 # ---------------------------------------------------------------------------
@@ -407,10 +423,84 @@ def run_svm_prediction(student: Student) -> None:
     print(f"Prediction for {student.name}: {prediction}")
 
 
+def _import_langchain():
+    # Cross-version imports: the course tutorial uses the pre-v1 layout
+    # (langchain.memory / langchain.chains), current installs split those
+    # into langchain-classic. Try both so the submission runs on either.
+    try:
+        from langchain.memory import ConversationBufferMemory
+        from langchain.chains import ConversationChain, RetrievalQA
+    except ImportError:
+        from langchain_classic.memory import ConversationBufferMemory
+        from langchain_classic.chains import ConversationChain, RetrievalQA
+    try:
+        from langchain_community.vectorstores import FAISS
+    except ImportError:
+        from langchain.vectorstores import FAISS
+    try:
+        from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+    except ImportError:
+        from langchain.chat_models import ChatOpenAI
+        from langchain.embeddings import OpenAIEmbeddings
+    return (
+        ConversationBufferMemory,
+        ConversationChain,
+        RetrievalQA,
+        FAISS,
+        ChatOpenAI,
+        OpenAIEmbeddings,
+    )
+
+
 def run_coach_chat(student: Student) -> None:
-    # M4: LangChain conversational chain with memory + FAISS RAG.
-    # Graceful degradation when OPENAI_API_KEY is unset.
-    pass
+    print()
+    print("=== Coach Chat (LangChain) ===")
+
+    if not os.environ.get("OPENAI_API_KEY"):
+        print("OPENAI_API_KEY not set; skipping Coach Chat.")
+        print("Set the environment variable and rerun to see the LLM sections.")
+        return
+
+    (
+        ConversationBufferMemory,
+        ConversationChain,
+        RetrievalQA,
+        FAISS,
+        ChatOpenAI,
+        OpenAIEmbeddings,
+    ) = _import_langchain()
+
+    llm = ChatOpenAI(model=LLM_MODEL, temperature=0)
+
+    print()
+    print("-- Memory chain --")
+    memory = ConversationBufferMemory()
+    chat = ConversationChain(llm=llm, memory=memory)
+    first = chat.predict(
+        input=(
+            f"My name is {student.name} and I am studying {student.course}. "
+            "Give me one concrete study tip in a single sentence."
+        )
+    )
+    print(f"Coach: {first}")
+    follow_up = chat.predict(input="What was my name?")
+    print(f"Coach: {follow_up}")
+    print()
+    print("memory.buffer:")
+    print(memory.buffer)
+
+    print()
+    print("-- Retrieval QA over the coach knowledge base --")
+    vector_store = FAISS.from_texts(KNOWLEDGE_BASE, OpenAIEmbeddings())
+    rag = RetrievalQA.from_chain_type(llm=llm, retriever=vector_store.as_retriever())
+    for question in (
+        "What is a good way to memorise material?",
+        "How should I structure a focused study session?",
+    ):
+        answer = rag.invoke({"query": question})["result"]
+        print(f"Q: {question}")
+        print(f"A: {answer}")
+        print()
 
 
 # ---------------------------------------------------------------------------
