@@ -1,6 +1,6 @@
 # Project Spec: AI Study Coach
 
-Version: 0.4.0
+Version: 0.5.0
 Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Spec: [assignment-2-spec.md](assignment-2-spec.md)
 
@@ -11,6 +11,11 @@ It is a first draft based on the brief and spec; it will be updated as code land
 - AI Study Coach is a single-file Python script that demonstrates five areas of Python competency for an Oxford AI Engineering course assignment.
 - The primary users are the course assessors, who run the script to verify each required capability is present and functional.
 - The core flow is a sequential terminal session that collects student data, summarises it with charts, predicts risk with an SVM classifier, and answers study questions via a LangChain Coach Chat.
+
+## Living Document Responsibilities
+- `assignment-2-brief.md`: the static deliverable description carried over from the course brief. Updated only when the brief itself changes.
+- `assignment-2-spec.md`: the **reproduce-from-this-alone** source of truth. A reader with this file, the brief, and the fixed tech stack should be able to reconstruct the project's deliverable shape — outcomes, scope, constraints, architecture, acceptance criteria, milestones, and prior decisions — without reading any other project file. **Any scope change, decision, or deliverable-affecting choice made during implementation must be reflected in `assignment-2-spec.md` before the corresponding pull request is merged.** This rule applies to every milestone (M1-M5) and survives across agent sessions.
+- `project-spec.md` (this file): the current implementation truth. Describes what is actually built and how the repo is structured today. Updated as code lands; carries durable project-level rules that apply across milestones.
 
 ## Domain Concepts
 - A `Person` base class holds name and course; `Student` inherits from it, satisfying the OOP inheritance requirement.
