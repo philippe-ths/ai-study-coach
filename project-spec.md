@@ -1,6 +1,6 @@
 # Project Spec: AI Study Coach
 
-Version: 0.3.1
+Version: 0.4.0
 Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Spec: [assignment-2-spec.md](assignment-2-spec.md)
 
@@ -55,17 +55,20 @@ It is a first draft based on the brief and spec; it will be updated as code land
 - openai: LLM provider used via LangChain for chat and RAG answers.
 
 ## Project Structure
-- `capstone.py`: Single Python file containing all five sections and the top-level docstring. (Input-collection section and `Person` / `Student` / `StudySession` domain model implemented; sections 2-5 are placeholder stubs.)
+- `capstone.py`: Single Python file containing all five sections and the top-level docstring. (Sections 1 and 2 implemented: input collection, `Person` / `Student` / `StudySession` domain model, Pandas DataFrame, summary metrics, and two Matplotlib chart types. Sections 3-5 are placeholder stubs.)
 - SVM training CSV: Synthetic labelled dataset read by the SVM section. (Not yet created; filename to be decided.)
+- `tests/`: Pytest suite covering the implemented sections (local dev only, excluded from the submission zip).
+- `requirements-dev.txt`: Pinned local dev dependencies used by the virtualenv (local dev only, excluded from the submission zip).
 - `assignment-2-brief.md`: Living brief describing the assignment goal.
 - `assignment-2-spec.md`: Living detailed spec covering outcomes, scope, constraints, architecture, milestones, and acceptance criteria.
 - `project-spec-template.md`: Template this spec was derived from (kept local, not part of the submission).
 - `.ai-policy/`, `.agents/`, `.claude/`, `.codex/`, `.gemini/`, `.githooks/`, `.github/`, `ai-workflow.md`, `CLAUDE.md`: AI workflow scaffolding, kept local and excluded from the submission zip.
 
 ## Testing Overview
-- No automated test framework is in place; the brief does not require unit tests.
-- Validation today is manual: run the script end-to-end and check each acceptance criterion (AC1-AC9) is visibly satisfied.
-- Major gap: no automated way to catch regressions in input validation, chart rendering, SVM accuracy, or LangChain chain behaviour.
+- Pytest suite under `tests/` covers the implemented sections. M2 is covered: DataFrame shape and columns, summary metric values, bar and line chart construction, smoke and empty-data paths for `run_data_and_charts`.
+- Tests run via `.venv/bin/pytest tests/`. `tests/conftest.py` forces the matplotlib `Agg` backend so suite runs are non-interactive.
+- Remaining manual validation: end-to-end run of `python capstone.py` to confirm each acceptance criterion (AC1-AC9) is visibly satisfied.
+- Coverage gaps: M1 input collection has no automated tests; M3-M5 sections have no coverage yet (stubs).
 
 ## Versioning
 - `project-spec.md` is the living "latest" document and is the only file CLAUDE.md imports.
