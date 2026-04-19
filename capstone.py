@@ -1,19 +1,41 @@
 """AI Study Coach.
 
-Run:
+A single-file terminal program that collects a student's study data,
+summarises and visualises it, predicts study risk with an SVM classifier,
+and answers study questions via a LangChain Coach Chat with memory and
+FAISS-backed retrieval.
+
+How to run
+----------
     python capstone.py
 
-The script runs sequentially through five sections:
-    1. Input collection         (implemented)
-    2. Data summary and charts  (implemented)
-    3. SVM risk prediction      (implemented)
-    4. Coach Chat (LangChain)   (implemented)
-    5. Docstring and packaging  (M5)
+The script expects `study_risk.csv` to sit next to `capstone.py` (same
+directory). It runs sequentially through four interactive sections:
 
-API key:
-    Section 4 uses the OPENAI_API_KEY environment variable. If it is not
-    set, section 4 prints a clear message and the script still completes
-    all other sections without error.
+    1. Input collection        - name, course, goals, quiz scores,
+                                 study sessions (with validation and
+                                 re-prompting on bad input).
+    2. Data summary and charts - Pandas DataFrame, summary metrics, and
+                                 two Matplotlib chart types (bar + line).
+    3. SVM risk prediction     - SVC trained on study_risk.csv with a
+                                 train/test split; prints accuracy, a
+                                 classification report, and a single
+                                 prediction for the current student.
+    4. Coach Chat (LangChain)  - ConversationBufferMemory + ConversationChain
+                                 (prints memory.buffer) plus a FAISS-backed
+                                 RetrievalQA over 10 in-code study-tip
+                                 chunks, answering two questions.
+
+How to set the API key
+----------------------
+Section 4 calls the OpenAI API via LangChain. Set your key in the shell
+before running the script:
+
+    export OPENAI_API_KEY=sk-...
+    python capstone.py
+
+If `OPENAI_API_KEY` is not set, section 4 prints a clear message and
+exits cleanly; sections 1-3 still run end-to-end without error.
 """
 
 from __future__ import annotations
@@ -255,7 +277,7 @@ def print_summary(student: Student) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Later sections (not yet implemented)
+# Section 2: Data and charts
 # ---------------------------------------------------------------------------
 
 
@@ -421,6 +443,11 @@ def run_svm_prediction(student: Student) -> None:
     features_df = pd.DataFrame(vector, columns=SVM_FEATURE_COLUMNS)
     prediction = model.predict(features_df)[0]
     print(f"Prediction for {student.name}: {prediction}")
+
+
+# ---------------------------------------------------------------------------
+# Section 4: Coach Chat (LangChain memory + RAG)
+# ---------------------------------------------------------------------------
 
 
 def _import_langchain():

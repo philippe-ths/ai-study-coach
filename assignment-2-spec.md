@@ -1,6 +1,6 @@
 # Assignment 2 Spec: AI Study Coach
 
-Version: 2.4.0
+Version: 2.5.0
 
 Audience: course assessors and AI coding agents working on the project.
 
@@ -251,3 +251,4 @@ Optional sections may be added where useful, for example:
 | M4 knowledge base: 10 hardcoded in-code chunks covering active recall, spaced repetition, Pomodoro, sleep, Feynman, interleaving, environment, exam technique, exercise, and goal-setting | Exceeds AC6's 8-chunk minimum with a small buffer and spans topical areas the brief calls out (study techniques, course logistics, exam rules). Keeps the knowledge base visible inside the script rather than in a separate file. Added in v2.4.0. |
 | M4 memory-chain exchange: two predictions per run (an opening tip request referencing the student's name and course, then "What was my name?") | A single exchange satisfies AC5's literal requirement, but the follow-up question gives the assessor a visible signal that `memory.buffer` actually carries prior turns. Added in v2.4.0. |
 | M4 graceful-degradation message: "OPENAI_API_KEY not set; skipping Coach Chat." followed by a hint to rerun with the variable set | AC7 requires a clear message; surfacing the rerun hint makes the skip feel like a controlled branch rather than an error, and keeps the assessor's exit-code-0 expectation intact. Added in v2.4.0. |
+| M5 submission zip built on demand with `zip -j PM_python_coding.zip capstone.py study_risk.csv` and gitignored rather than committed | The zip is a derived artefact of two tracked files; keeping it out of git prevents drift between the submitted zip and the source files. `-j` flattens directory prefixes so both files land at the zip root as AC9 requires. Added in v2.5.0. |
