@@ -423,7 +423,11 @@ def run_svm_prediction(student: Student) -> None:
     print("SVM risk prediction")
     print("=" * 60)
 
-    X, y = load_training_data(SVM_CSV_PATH)
+    try:
+        X, y = load_training_data(SVM_CSV_PATH)
+    except FileNotFoundError:
+        print(f"Training data not found: {SVM_CSV_PATH.name} — skipping SVM section.")
+        return
     print(f"Loaded {len(X)} training rows from {SVM_CSV_PATH.name}")
 
     model, accuracy, report = train_svm(X, y)

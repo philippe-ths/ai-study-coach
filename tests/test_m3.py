@@ -93,3 +93,15 @@ def test_run_svm_prediction_insufficient_data(capsys):
     out = capsys.readouterr().out
     assert "Test accuracy:" in out
     assert "Not enough data to predict" in out
+
+
+def test_run_svm_prediction_missing_csv(monkeypatch, capsys):
+    import capstone
+
+    monkeypatch.setattr(capstone, "SVM_CSV_PATH", Path("/nonexistent/study_risk.csv"))
+    student = Student(name="Dev", course="AI Eng", goals="-")
+    run_svm_prediction(student)
+    out = capsys.readouterr().out
+    assert "study_risk.csv" in out
+    assert "skipping SVM section" in out
+    assert "Test accuracy:" not in out
