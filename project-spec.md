@@ -1,6 +1,6 @@
 # Project Spec: AI Study Coach
 
-Version: 0.8.0
+Version: 0.8.1
 Brief: [assignment-2-brief.md](assignment-2-brief.md)
 Spec: [assignment-2-spec.md](assignment-2-spec.md)
 
@@ -88,6 +88,7 @@ It is a first draft based on the brief and spec; it will be updated as code land
 - Living documents (`project-spec.md`, `assignment-2-spec.md`, `assignment-2-brief.md`) use unversioned filenames.
 - The current version is recorded in the `Version: X.Y.Z` header at the top of each living document.
 - When releasing a new minor or major version, create a Git tag on the merge commit using the format `<doc-slug>/X.Y.Z` (e.g. `spec/2.1.0`, `project-spec/0.2.0`).
+- The canonical tag prefix for `assignment-2-spec.md` is `spec/`. Tags `assignment-2-spec/2.2.0`, `assignment-2-spec/2.3.0`, and `assignment-2-spec/2.4.0` are historical, created before this convention was established; use `spec/` for all future bumps.
 - Git history and tags are the canonical record of past versions; do not create physical snapshot files for living docs.
 - Versioned filenames may still be used for frozen documents that will not be updated.
 - Historical versions are viewed via `git show <tag>:<path>` or GitHub's browse-at-tag UI; link to historical content with tag-pinned URLs rather than inline filenames.
