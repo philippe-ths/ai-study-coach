@@ -2,8 +2,6 @@
 
 Single-file Python terminal app that collects a student's study data, summarises and visualises it, predicts study risk with an SVM classifier, and answers questions via a LangChain coach chat with memory and RAG.
 
-> **Status:** in progress. `capstone.py` is in the repo with the input-collection section and the data / charts section implemented; the SVM training CSV and the SVM / LangChain sections are not yet complete. This README describes the intended runtime behaviour as defined in [`project-spec.md`](project-spec.md) and will be updated to match implementation truth as code lands.
-
 ## What it does
 
 1. **OOP domain model** — `Student` and `StudySession` classes with encapsulation and inheritance; terminal input with validation and re-prompting.
@@ -52,6 +50,6 @@ All non-LLM sections (input, OOP model, Pandas summary, Matplotlib charts, SVM p
 
 ## File layout
 
-- `capstone.py` — single-file script containing all five sections. *(Sections 1 and 2 implemented; sections 3-5 are placeholder stubs.)*
-- SVM training CSV — synthetic labelled dataset read by the SVM section. *(Not yet created; filename TBD.)*
+- `capstone.py` — single-file script containing all five sections.
+- `study_risk.csv` — synthetic labelled dataset read by the SVM section.
 - [`project-spec.md`](project-spec.md) — living implementation-truth spec for this project.
