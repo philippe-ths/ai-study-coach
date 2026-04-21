@@ -36,6 +36,21 @@ before running the script:
 
 If `OPENAI_API_KEY` is not set, section 4 prints a clear message and
 exits cleanly; sections 1-3 still run end-to-end without error.
+
+Dependencies
+------------
+Required: pandas, numpy, matplotlib, scikit-learn.
+Optional (for section 5 Coach Chat): langchain, langchain-openai,
+langchain-community, faiss-cpu.
+
+Process and spec
+----------------
+This capstone was built spec-first. The public repo with spec
+iterations, AI workflow, and commit history is at:
+https://github.com/philippe-ths/ai-study-coach
+
+I also heavily used my own AI workflow, which I've been developing for the last few months. 
+https://github.com/philippe-ths/ai-coding-workflow/
 """
 
 from __future__ import annotations
