@@ -2,6 +2,8 @@
 
 Single-file Python terminal app that collects a student's study data, summarises and visualises it, predicts study risk with an SVM classifier, and answers questions via a LangChain coach chat with memory and RAG.
 
+Built as Assignment 2 (Python Coding, Part 1) of the Oxford AI Engineering programme, against the brief in [`assignment-2-brief.md`](assignment-2-brief.md).
+
 ## What it does
 
 1. **OOP domain model** — `Student` and `StudySession` classes with encapsulation and inheritance; terminal input with validation and re-prompting.
@@ -52,4 +54,4 @@ All non-LLM sections (input, OOP model, Pandas summary, Matplotlib charts, SVM p
 
 - `capstone.py` — single-file script containing all five sections.
 - `study_risk.csv` — synthetic labelled dataset read by the SVM section.
-- [`project-spec.md`](project-spec.md) — living implementation-truth spec for this project.
+- [`assignment-2-spec.md`](assignment-2-spec.md) — the implementation spec this was built to; [`project-context.md`](project-context.md) — the current implementation snapshot.
